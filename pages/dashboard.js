@@ -1,35 +1,22 @@
-import { useState, useEffect } from 'react';
-import UpdateUserForm from '../components/UpdateUserForm';
-import Dashboard from '../components/Dashboard';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function DashboardPage() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [token, setToken] = useState('');
-  const [isUpdated, setIsUpdated] = useState(false);
+const Dashboard = () => {
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.href = '/';
-    } else {
-      setAuthenticated(true);
-      setToken(token);
+      router.push('/');
     }
-  }, []);
+  }, [router]);
 
-  const handleUpdate = () => {
-    setIsUpdated(true);
-    setTimeout(() => setIsUpdated(false), 3000); // Show update success message for 3 seconds
-  };
-
-  return authenticated ? (
+  return (
     <div>
-      <h2>Dashboard</h2>
-      {isUpdated && <p>User updated successfully!</p>}
-      <UpdateUserForm token={token} onUpdate={handleUpdate} />
-      <Dashboard />
+      <h1>仪表板</h1>
+      {/* 其他仪表板内容 */}
     </div>
-  ) : (
-    <p>Loading...</p>
   );
-}
+};
+
+export default Dashboard;
