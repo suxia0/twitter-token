@@ -1,0 +1,17 @@
+{
+  "name": "my-vercel-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^8.5.1",
+    "next": "12",
+    "react": "17",
+    "react-dom": "17"
+  }
+}
