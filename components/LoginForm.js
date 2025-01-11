@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import styles from '../styles/LoginForm.module.css';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -8,9 +9,13 @@ export default function LoginForm() {
     password: ''
   });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
@@ -30,6 +35,8 @@ export default function LoginForm() {
       }
     } catch (error) {
       setError('登录过程中发生错误');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -41,9 +48,9 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
-      <div>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      {error && <div className={styles.error}>{error}</div>}
+      <div className={styles.formGroup}>
         <label htmlFor="username">用户名：</label>
         <input
           type="text"
@@ -52,9 +59,10 @@ export default function LoginForm() {
           value={formData.username}
           onChange={handleChange}
           required
+          className={styles.input}
         />
       </div>
-      <div style={{ marginTop: '1rem' }}>
+      <div className={styles.formGroup}>
         <label htmlFor="password">密码：</label>
         <input
           type="password"
@@ -63,21 +71,15 @@ export default function LoginForm() {
           value={formData.password}
           onChange={handleChange}
           required
+          className={styles.input}
         />
       </div>
       <button 
         type="submit"
-        style={{ 
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#0070f3',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer'
-        }}
+        className={styles.button}
+        disabled={isLoading}
       >
-        登录
+        {isLoading ? '登录中...' : '登录'}
       </button>
     </form>
   );
