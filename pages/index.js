@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import LoginForm from '../components/LoginForm';
 import styles from '../styles/Home.module.css';
 
-const Home = () => {
+function HomePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,6 +46,6 @@ const Home = () => {
       </main>
     </div>
   );
-};
+}
 
-export default Home;
+export default HomePage;
