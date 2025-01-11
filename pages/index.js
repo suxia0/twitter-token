@@ -11,10 +11,12 @@ export default function Home() {
     // 检查用户是否已登录
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          // 如果已登录，重定向到仪表板
-          router.push('/dashboard');
+        // 确保代码只在客户端运行
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('token');
+          if (token) {
+            router.push('/dashboard');
+          }
         }
       } catch (error) {
         console.error('认证检查失败:', error);
@@ -26,8 +28,13 @@ export default function Home() {
     checkAuth();
   }, [router]);
 
+  // 添加加载状态的样式
   if (isLoading) {
-    return <div>加载中...</div>;
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>加载中...</div>
+      </div>
+    );
   }
 
   return (
