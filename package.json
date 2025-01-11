@@ -1,5 +1,5 @@
 {
-  "name": "twitter-token",
+  "name": "twitter-token-manager",
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
