@@ -3,15 +3,13 @@ import { useRouter } from 'next/router';
 import LoginForm from '../components/LoginForm';
 import styles from '../styles/Home.module.css';
 
-export default function Home() {
+const Home = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 检查用户是否已登录
     const checkAuth = async () => {
       try {
-        // 确保代码只在客户端运行
         if (typeof window !== 'undefined') {
           const token = localStorage.getItem('token');
           if (token) {
@@ -28,7 +26,6 @@ export default function Home() {
     checkAuth();
   }, [router]);
 
-  // 添加加载状态的样式
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -49,4 +46,6 @@ export default function Home() {
       </main>
     </div>
   );
-}
+};
+
+export default Home;
