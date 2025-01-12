@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const GITHUB_OWNER = 'suxa0'; // GitHub 用户名
 const GITHUB_REPO = 'twitter-token'; // 仓库名
 const GITHUB_FILE_PATH = 'twitter-token.json'; // 文件路径
