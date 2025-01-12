@@ -1,22 +1,54 @@
-import fs from 'fs';
-import path from 'path';
+import fetch from 'node-fetch';
 
-export default function handler(req, res) {
+const GITHUB_OWNER = 'suxa0'; // GitHub 用户名
+const GITHUB_REPO = 'twitter-token'; // 仓库名
+const GITHUB_FILE_PATH = 'twitter-token.json'; // 文件路径
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN; // 从环境变量中读取 GitHub Token
+
+export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const filePath = path.join(process.cwd(), 'twitter-token.json');
-        const { num, token } = req.body;
+        const { content } = req.body; // 前端传递的新内容（JSON 字符串）
+        const encodedContent = Buffer.from(content).toString('base64'); // 将内容编码为 Base64
+
+        const fileUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE_PATH}`;
 
         try {
-            const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+            // Step 1: 获取文件的 SHA 值
+            const getResponse = await fetch(fileUrl, {
+                headers: {
+                    Authorization: `Bearer ${GITHUB_TOKEN}`,
+                },
+            });
 
-            // 更新或添加 num 和 token 的键值对
-            data[num] = token;
+            if (!getResponse.ok) {
+                return res.status(400).json({ success: false, message: 'Failed to fetch file details.' });
+            }
 
-            // 写入文件
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-            res.status(200).json({ success: true, message: 'Token updated successfully!' });
+            const fileData = await getResponse.json();
+            const sha = fileData.sha; // 提取文件的 SHA 值
+
+            // Step 2: 更新文件内容
+            const updateResponse = await fetch(fileUrl, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: 'Update twitter-token.json via API', // 提交信息
+                    content: encodedContent, // 新的文件内容
+                    sha, // 必须包含文件的 SHA 值
+                }),
+            });
+
+            if (updateResponse.ok) {
+                return res.status(200).json({ success: true, message: 'File updated successfully!' });
+            } else {
+                const errorData = await updateResponse.json();
+                return res.status(400).json({ success: false, message: errorData.message });
+            }
         } catch (error) {
-            res.status(500).json({ success: false, message: 'Error updating token.', error: error.message });
+            return res.status(500).json({ success: false, message: error.message });
         }
     } else {
         res.status(405).json({ success: false, message: 'Method not allowed' });
