@@ -1,14 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-const Home = () => {
+export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/admin"); // Redirect to admin page
-  }, []);
+    router.replace("/admin"); // 使用 replace 替代 push，避免历史记录堆叠
+  }, [router]);
 
-  return null;
-};
-
-export default Home;
+  return null; // 返回空内容
+}
